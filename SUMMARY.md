@@ -5,16 +5,16 @@
 * [面向开发者指南](chapter2.md)
    * [CRUD操作](crud_usage.md)
    * [Aggregation使用](aggregation_usage.md)
-   * 索引使用
-   * MapReduce实践
-* 面向运维部署指南
-   * 单机部署
-   * 副本备份模式
-   * sharding分片部署
-   * 帐户安全机制
-   * 管理员配置
-* Mongodb VS SQL
-* pymongo使用
-* 数据模型设计
-* 高性能高可用优化指南
+   * [索引使用](index_usage.md)
+   * [MapReduce实践](mapreduce.md)
+* [面向运维部署指南](chapter3.md)
+   * [单机部署](single_server.md)
+   * [副本备份模式](replication.md)
+   * [sharding分片部署](sharding.md)
+   * [帐户安全机制](security.md)
+   * [管理员配置](administration.md)
+* [Mongodb VS SQL](chapter4.md)
+* [pymongo使用](chpater5.md)
+* [数据模型设计](chapter6.md)
+* [高性能高可用优化指南](chapter7.md)
 
