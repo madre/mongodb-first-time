@@ -6,6 +6,7 @@
    * [CRUD操作](crud_usage.md)
    * [Aggregation使用](aggregation_usage.md)
    * 索引使用
+   * MapReduce实践
 * 面向运维部署指南
    * 单机部署
    * 副本备份模式
