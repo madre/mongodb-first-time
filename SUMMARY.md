@@ -5,5 +5,4 @@
 * [面向开发者指南](chapter2.1.md)
    * [CRUD操作](crud_usage.md)
    * [Aggregation使用](aggregation_usage.md)
-   * [CRUD操作](crud_usage.md)
 
