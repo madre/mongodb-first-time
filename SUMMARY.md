@@ -6,4 +6,5 @@
    * [CRUD操作](crud_usage.md)
    * [Aggregation使用](aggregation_usage.md)
 * 面向运维部署指南
+   * 单机部署
 
