@@ -1,9 +1,10 @@
-开发者关心的是数据库的操作。本部分分为以下几个内容块：
+开发者关心的是数据库的操作。本章分为以下几个内容：
 1. 增删改查CRUD操作
 2. 数据集合Aggregation函数使用
 3. 利用索引加速查询，基于地理位置查询，文本搜索
 
-### CRUD操作
+CRUD操作
+======
 mongodb的文档结构如图：
 
 ![mongodb struct](http://docs.mongodb.org/manual/_images/crud-annotated-collection.png)
