@@ -22,7 +22,7 @@ mongodb有以下包文件：
 
 可以单独安装其中任一包。
 
-ubuntu 安装卸载 mongodb
+ubuntu 安装 mongodb
 =====
 
 * 使用ubuntu的包管理器导入mongodb的GPG公钥
@@ -49,7 +49,50 @@ ubuntu 安装卸载 mongodb
  > sudo service mongod restart
    
 * 卸载mongodb
+ > 卸载需要先停止服务: sudo service mongod stop
+ >
  > sudo apt-get purge mongodb-org*
  >
  > 删除日志文件：sudo rm -r /var/log/mongodb
+ >
+ > 删除数据文件：sudo rm -r /var/lib/mongodb
+
+Red Hat Enterprise Linux 或 CentOS安装
+=====
+
+* 配置yum包管理系统
+
+	> 创建文件 /etc/yum.repos.d/mongodb-org-3.0.repo 以便能够直接使用yum安装mongodb
+	> 
+	> 文件内容如下：
+	> 
+		[mongodb-org-3.0]
+			name=MongoDB Repository
+			baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.0/x86_64/
+			gpgcheck=0
+			enabled=1
+
+
+* 安装mongodb包
+
+	> sudo yum install -y mongodb-org
+	> 
+	> 或指定版本安装: sudo yum install -y mongodb-org-3.0.6 mongodb-org-server-3.0.6 mongodb-org-shell-3.0.6 mongodb-org-mongos-3.0.6 mongodb-org-tools-3.0.6
+
+
+* mongodb启动
+	
+	> sudo service mongod start
+	>
+	> sudo service mongod stop
+	>
+	> sudo service mongod restart
+ 
+* 卸载mongodb
+ > 卸载需要先停止服务: sudo service mongod stop
+ >
+ > sudo yum erase $(rpm -qa | grep mongodb-org)
+ >
+ > 删除日志文件：sudo rm -r /var/log/mongodb
+ >
  > 删除数据文件：sudo rm -r /var/lib/mongodb
