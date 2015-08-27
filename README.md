@@ -1,4 +1,21 @@
-My Awesome Book
+Mongodb简介
 =======
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+mongodb是一个文档数据库，数据存储格式为Bson，与json数据格式相似。
+
+[数据库排名网站] (http://db-engines.com/en/ranking): http://db-engines.com/en/ranking 中能够看出，mongodb使用情况在缓步上升。mongodb3.0 添加了新的存储引擎WiredTiger，读写性能提升7全部，并发提升6倍，存储空间测试下压缩30%－80%。
+
+安装方式、部署模式、安全机制都在慢慢变得更加方便简易〜
+
+### 文档数据库的优点
+
+1. 文档存储的数据和大多数语言的数据类型一致，让程序实现更加方便
+2. 嵌入文档和列表，减少代价很高的join操作，性能更易调优
+3. 动态的语法能够支持数据形态多样化，方便数据扩展
+4. 内置sharding，在数据规模变大时，很方便建立数据集群
+5. 数据库集成Map-Reduce，方便大规模数据量的统计
+
+### 文档数据库的缺点
+1. mongodb不支持事务操作，没有严格的数据一致性，更确切的说需要程序层掌握数据一致性
+2. 没有关系型数据库成熟的理论体系，成熟的运维工具；
+3. 很多语言有依赖于关系型的ORM的开源项目，能够快速实现运营管理系统；mongodb和ORM并不兼容，所以运营系统需要独立研发。（当然如果数据量特别大或者运营管理定制化时，运营系统研发基本需要全部自定制，ORM的优势就不会存在了；只是在项目初阶和中期，ORM集成化的运营系统能够减少研发周期〜）
