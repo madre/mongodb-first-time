@@ -3,7 +3,7 @@
 * [Introduction](README.md)
 * [mongodb安装](chapter1.md)
 * [面向开发者指南](chapter2.md)
-   * [CRUD操作](crud_usage.md)
+   * [CRUD操作简介](crud_usage.md)
    * [Aggregation使用](aggregation_usage.md)
    * [索引使用](index_usage.md)
    * [MapReduce实践](mapreduce.md)
