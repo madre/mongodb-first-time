@@ -7,6 +7,7 @@
    * [Aggregation使用](aggregation_usage.md)
    * [索引使用](index_usage.md)
    * [MapReduce实践](mapreduce.md)
+   * [地理位置索引查询实践](geoindex.md)
 * [面向运维部署指南](chapter3.md)
    * [单机部署](single_server.md)
    * [副本备份模式介绍](replication.md)
