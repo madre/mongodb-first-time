@@ -76,3 +76,124 @@
 6. 添加指定仲裁机
     
     rs.addArb("192.168.199.20:27017");
+
+7. 查看配后的副本集群状态
+
+	rs.conf()
+	
+		{
+		"_id" : "repdata",
+		"version" : 9,
+		"members" : [
+			{
+				"_id" : 0,
+				"host" : "192.168.199.18:27017",
+				"arbiterOnly" : false,
+				"buildIndexes" : true,
+				"hidden" : false,
+				"priority" : 1,
+				"tags" : {
+	
+				},
+				"slaveDelay" : 0,
+				"votes" : 1
+			},
+			{
+				"_id" : 1,
+				"host" : "192.168.199.19:27017",
+				"arbiterOnly" : false,
+				"buildIndexes" : true,
+				"hidden" : false,
+				"priority" : 1,
+				"tags" : {
+	
+				},
+				"slaveDelay" : 0,
+				"votes" : 1
+			},
+			{
+				"_id" : 2,
+				"host" : "192.168.199.20:27017",
+				"arbiterOnly" : true,
+				"buildIndexes" : true,
+				"hidden" : false,
+				"priority" : 1,
+				"tags" : {
+	
+				},
+				"slaveDelay" : 0,
+				"votes" : 1
+			}
+		],
+		"settings" : {
+			"chainingAllowed" : true,
+			"heartbeatTimeoutSecs" : 10,
+			"getLastErrorModes" : {
+	
+			},
+			"getLastErrorDefaults" : {
+				"w" : 1,
+				"wtimeout" : 0
+			}
+		}
+		}
+		
+	1. 确认下集群是有指定好的3个 member组成；
+	2. 确认各个子集的host是ip地址，或者为有效的域名地址；如果不是，按上面提到的方法使用 cfg.members[0].host = "192.168.199.18"， rs.reconfig(cfg)重新指定
+
+8. 查看当前运行状态
+
+	rs.status()
+	
+		{
+		"set" : "repdata",
+		"date" : ISODate("2015-10-16T18:55:33.785Z"),
+		"myState" : 1,
+		"members" : [
+			{
+				"_id" : 0,
+				"name" : "192.168.199.18:27017",
+				"health" : 1,
+				"state" : 1,
+				"stateStr" : "PRIMARY",
+				"uptime" : 47550,
+				"optime" : Timestamp(1444980684, 1),
+				"optimeDate" : ISODate("2015-10-16T07:31:24Z"),
+				"electionTime" : Timestamp(1444974225, 2),
+				"electionDate" : ISODate("2015-10-16T05:43:45Z"),
+				"configVersion" : 9,
+				"self" : true
+			},
+			{
+				"_id" : 1,
+				"name" : "192.168.199.19:27017",
+				"health" : 1,
+				"state" : 2,
+				"stateStr" : "SECONDARY",
+				"uptime" : 23008,
+				"optime" : Timestamp(1444980684, 1),
+				"optimeDate" : ISODate("2015-10-16T07:31:24Z"),
+				"lastHeartbeat" : ISODate("2015-10-16T18:55:33.317Z"),
+				"lastHeartbeatRecv" : ISODate("2015-10-16T18:55:33.325Z"),
+				"pingMs" : 0,
+				"syncingTo" : "192.168.199.18:27017",
+				"configVersion" : 9
+			},
+			{
+				"_id" : 2,
+				"name" : "192.168.199.20:27017",
+				"health" : 1,
+				"state" : 7,
+				"stateStr" : "ARBITER",
+				"uptime" : 41049,
+				"lastHeartbeat" : ISODate("2015-10-16T18:55:33.286Z"),
+				"lastHeartbeatRecv" : ISODate("2015-10-16T18:55:33.374Z"),
+				"pingMs" : 0,
+				"configVersion" : 9
+			}
+		],
+		"ok" : 1
+		}
+
+	核心确认三个members的 stateStr状态码，如果分别是 PRIMARY、SECONDARY、ARBITER，说明设置无误；如果是 STARTUP或者其他状态，说明通信有问题，需要查看网络或者其他相关设置。
+	
