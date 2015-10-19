@@ -9,7 +9,7 @@
    * [MapReduce实践](mapreduce.md)
 * [面向运维部署指南](chapter3.md)
    * [单机部署](single_server.md)
-   * [副本备份模式](replication.md)
+   * [副本备份模式介绍](replication.md)
    * [sharding分片部署](sharding.md)
    * [帐户安全机制](security.md)
    * [管理员配置](administration.md)
