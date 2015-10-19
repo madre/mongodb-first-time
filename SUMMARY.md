@@ -10,7 +10,7 @@
 * [面向运维部署指南](chapter3.md)
    * [单机部署](single_server.md)
    * [副本备份模式介绍](replication.md)
-       * 副本集模式部署
+       * [副本集模式部署](replication_deploy.md)
    * [sharding分片部署](sharding.md)
    * [帐户安全机制](security.md)
    * [管理员配置](administration.md)
