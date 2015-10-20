@@ -1,6 +1,6 @@
 # Summary
 
-* [Introduction](README.md)
+* [简介](README.md)
 * [mongodb安装](chapter1.md)
 * [面向开发者指南](chapter2.md)
    * [CRUD操作简介](crud_usage.md)
@@ -14,7 +14,7 @@
        * [副本集模式部署](replication_deploy.md)
    * [sharding分片部署](sharding.md)
    * [帐户安全机制](security.md)
-   * [管理员配置](administration.md)
+   * [管理员配置技巧](administration.md)
 * [Mongodb VS SQL](chapter4.md)
 * [pymongo使用](chpater5.md)
 * [数据模型设计](chapter6.md)
