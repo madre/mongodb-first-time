@@ -38,7 +38,157 @@ Mongodb的聚合操作是有一组分步骤的操作组成，每个步骤会改�
 
 一般来说这些表达式都是无状态只能被聚合操作执行计算，但有一个例外:  accumulator 表达式（sum, avg, last等累加计数的表达式）。这些计数操作，一般和group方法一起使用。
 
+
+### 使用聚合操作邮政编码
+
+在网页 http://media.mongodb.org/zips.json 中有一系列的邮编数据，你可以使用 mongoimport 将相关的json数据导入你的mongodb数据实例中。［mongoimport在后面章节有介绍］
+
+#### 数据实例
+
+每一列的邮编数据如下所示：
+
+	{
+	  "_id": "10280",
+	  "city": "NEW YORK",
+	  "state": "NY",
+	  "pop": 5574,
+	  "loc": [
+	    -74.016323,
+	    40.710537
+	  ]
+	}
+	
+在接下一来的一系列示例中，我们将核心使用 aggregate()方法，聚合操作计算数据。 aggregate方法 使用聚合管道处理文档得到统计结果。
+
+### 返回所有人口(pop)值超过1千万的州
+
+> db.zipcodes.aggregate( [
+>
+>    { $group: { _id: "$state", totalPop: { $sum: "$pop" } } },
+>
+>    { $match: { totalPop: { $gte: 10*1000*1000 } } }
+>
+> ] )
+
+上面的mongo shell命令由 $group 和 $ match 组成而成。
+
+* $group 阶段将zipcode文档以state字段进行分组，计算每个state字段的 totalPop值，并且为每一个唯一的state输出一个文档。
+* 新生成的 state 文档有两个字段: _id, totalPop。 _id字段包含着state之前的值，也是分组的字段。 totalPop字段是计算后得出的字段，包含了每个state对应的总人口。 为了计算结果， $group 使用了 $sum 操作来将不同的state对应的值叠加在一起。
+* 在 $group 阶段之后, 在管道中的文档集类似于下面的结构:
+
+	>{"_id" : "AK", "totalPop" : 550043}
+
+* $match 阶段过滤分组后的文档集，输出那些totalPop值大于等于1千万的文档。$match 阶段并不会改变匹配的文档，仅仅是输出匹配文档。 
+
+上面的 mongo shell 命令等同于下面的SQL操作:
+
+	SELECT state, SUM(pop) AS totalPop
+	FROM zipcodes
+	GROUP BY state
+	HAVING totalPop >= (10*1000*1000)
+
+#### 各州城市人口平均值
+
+下面的mongo shell命令，将会返回各州城市人口平均值：
+	
+	db.zipcodes.aggregate( [
+	   { $group: { _id: { state: "$state", city: "$city" }, pop: { $sum: "$pop" } } },
+	   { $group: { _id: "$_id.state", avgCityPop: { $avg: "$pop" } } }
+	] )
+
+* 第一个 $group 阶段， 将文档按city和state组合分组，使用 $sum 计算出每一个组合的城市人口，然后输出每个 城市和州 的组合数据。经过这阶段的处理，将得到如下结构的数据:
+
+		{
+		  "_id" : {
+		    "state" : "CO",
+		    "city" : "EDGEWATER"
+		  },
+		  "pop" : 13154
+		}
+		
+* 第二阶段的 $group 将上面得到的文档按 _id.state 字段再进行分组，然后使用 $avg 表达式计算出各州每个城市的平均人口中，然后输出各州的文档。 得到的文档如下所示:
+
+		{
+		  "_id" : "MN",
+		  "avgCityPop" : 5335
+		}
+
+#### 统计各州人口最大和最小的城市
+
+下面的命令有点长，用来统计各州人口最大和最小的城市:
+
+	db.zipcodes.aggregate( [
+	   { $group:
+	      {
+	        _id: { state: "$state", city: "$city" },
+	        pop: { $sum: "$pop" }
+	      }
+	   },
+	   { $sort: { pop: 1 } },
+	   { $group:
+	      {
+	        _id : "$_id.state",
+	        biggestCity:  { $last: "$_id.city" },
+	        biggestPop:   { $last: "$pop" },
+	        smallestCity: { $first: "$_id.city" },
+	        smallestPop:  { $first: "$pop" }
+	      }
+	   },
+	
+	  // the following $project is optional, and
+	  // modifies the output format.
+	
+	  { $project:
+	    { _id: 0,
+	      state: "$_id",
+	      biggestCity:  { name: "$biggestCity",  pop: "$biggestPop" },
+	      smallestCity: { name: "$smallestCity", pop: "$smallestPop" }
+	    }
+	  }
+	] )
+
+
+* 第一个 $group 阶段， 将文档按city和state组合分组，使用 $sum 计算出每一个组合的城市人口，然后输出每个 城市和州 的组合数据。经过这阶段的处理，将得到如下结构的数据:
+
+		{
+		  "_id" : {
+		    "state" : "CO",
+		    "city" : "EDGEWATER"
+		  },
+		  "pop" : 13154
+		}
+
+* $sort 阶段把管道中的文档按pop字段的值从小到大进行排序，这个操作不会改变文档数据。
+* 之后的 $group 阶段把新排序后的文档按 _id.state字段进行分组，并且输出每个state 对应的文档。这个阶段也计算了每个state对应的最大最小值。使用 $last 表达式，$group 操作创建 biggestCity和biggestPop 两个字段并存储城市名和城市的最大人口数。 使用 $first 表达式，$group 操作创建 smallestCity和smallestPop 两个字段并存储城市名和城市的最小人口数。 结果输出如下:
+
+		{
+		  "_id" : "WA",
+		  "biggestCity" : "SEATTLE",
+		  "biggestPop" : 520096,
+		  "smallestCity" : "BENGE",
+		  "smallestPop" : 2
+		}
+
+* 最后的 $project 阶段重命名了 _id 字段为 state，把 biggestCity, biggestPop, smallestCity, smallestPop, biggestCity和smallestCity 几个字段存入嵌套文档内。
+
+最终输出结果如下：
+	
+	{
+	  "state" : "RI",
+	  "biggestCity" : {
+	    "name" : "CRANSTON",
+	    "pop" : 176404
+	  },
+	  "smallestCity" : {
+	    "name" : "CLAYVILLE",
+	    "pop" : 45
+	  }
+	}
+
+
 ### 用户偏爱数据介绍方法 project, sort, group, unwind, limit
+
+上面的邮编数据统计给出了一些数据的基本示例，下面会再给出一些更复杂的用法示例：
 
 #### 数据模型
 假设我们有一组运动俱乐部的用户偏爱数据users，包括用户的加入时间和偏爱的运动项目。大致的数据结构如下：
@@ -223,6 +373,7 @@ Mongodb的聚合操作是有一组分步骤的操作组成，每个步骤会改�
 	  "_id" : "tennis",
 	  "number" : 18
 	}
+
 
 ## 单一目的聚合操作 (Single Purpose Aggregation)
 单一目的的聚合操作种类少，只是将几种应用在一个数据值的常用聚合操作直接并入数据集的属性下方便使用。mongodb提供的一组在一些在一组数据中执行特定聚合操作的方法。包括：
